@@ -24,16 +24,12 @@ dataPanel.addEventListener('click', (event) => {
 })
 
 // 監聽 search bar 
-searchForm.addEventListener('submit', function onSearchFormSubmitted (event) {
-  event.preventDefault()
+searchForm.addEventListener('input', function onSearchFormSubmitted (event) {
   const keyword = searchInput.value.trim().toLowerCase()
   let filteredMovies = []
   filteredMovies = movies.filter((movie) =>
     movie.title.toLowerCase().includes(keyword)
   )
-  if (filteredMovies.length === 0) {
-    return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的電影`)
-  }
   renderMovieList(filteredMovies)
 })
 
