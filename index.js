@@ -4,6 +4,8 @@ const POSTER_URL = BASE_URL + '/posters/'
 const movies = []
 const dataPanel = document.querySelector('#data-panel')
 const searchForm = document.querySelector('#search-form')
+const searchInput = document.querySelector('#search-input')
+
 
 
 axios
@@ -24,7 +26,15 @@ dataPanel.addEventListener('click', (event) => {
 // 監聽 search bar 
 searchForm.addEventListener('submit', function onSearchFormSubmitted (event) {
   event.preventDefault()
-  console.log(event)
+  const keyword = searchInput.value.trim().toLowerCase()
+  let filteredMovies = []
+  filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(keyword)
+  )
+  if (filteredMovies.length === 0) {
+    return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的電影`)
+  }
+  renderMovieList(filteredMovies)
 })
 
 function renderMovieList (data) {
