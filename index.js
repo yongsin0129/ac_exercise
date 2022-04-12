@@ -67,18 +67,27 @@ renderStyle.addEventListener('click', e => {
       currentRenderStyle = 'card'
       renderMovieList(currentMovieDataByPage, currentRenderStyle)
       break
+    case ('accordion-style'):
+      currentRenderStyle = 'accordion'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('clear-all-favorites'):
+      localStorage.removeItem('favoriteMovies')
+      location.reload()
+      break
   }
 })
 
 function renderMovieList (data, style) {
   switch (style) {
     case 'list':
-      console.log("list style")
       renderListStyle(data)
       break
     case 'card':
-      console.log("card style")
       renderCardStyle(data)
+      break
+    case 'accordion':
+      renderAccordionStyle(data)
       break
   }
 }
@@ -162,12 +171,38 @@ function renderCardStyle (data) {
   activeAddIconOrNot()
 }
 
+function renderAccordionStyle (data) {
+  let rawHTML = ''
+  data.forEach((item) => {
+    rawHTML += `
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button collapsed fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${item.id}">
+            ${item.title}
+          </button>
+        </h2>
+      <div id="collapse${item.id}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div class="accordion-body row align-items-center">
+          <div class="col-2"><img src="${POSTER_URL + item.image}" class="card-img-top w-100" alt="Movie Poster"></div>
+          <div class="col-8">
+            <h3>${item.description}</h3>
+            <h5 style="color: rgb(255,165,0)">${item.release_date}</h5>
+          </div>
+          <div class="col-2"><button class="btn btn-info btn-add-favorite float-end btn-lg" data-id="${item.id}">+</button></div>
+        </div>
+      </div>
+    </div>
+    `
+  })
+  dataPanel.innerHTML = rawHTML
+  activeAddIconOrNot()
+}
+
 function activeAddIconOrNot () {
   favoriteMovieList.forEach((e) => {
     const target = document.querySelector(`.btn-info[data-id="${e.id}"]`)
-    console.log(target)
     if (!target) return
     target.classList.remove('btn-info')
   })
 }
-
