@@ -5,3 +5,7 @@
   /* font-size: 1.1em; */
   transform: scale(1.2);
 }
+
+.container {
+  min-height: 921px;
+}

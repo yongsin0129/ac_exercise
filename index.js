@@ -12,6 +12,7 @@ const movies = []
 let currentMovieData = [] // 使用 search 會改變資料，所以創立一個變數來裝
 let currentMovieDataByPage = []
 let currentRenderStyle = 'card'
+const favoriteMovieList = JSON.parse(localStorage.getItem('favoriteMovies')) || []
 
 axios
   .get(INDEX_URL)
@@ -21,6 +22,7 @@ axios
     currentMovieDataByPage = getMovieDataByPage(currentPage)
     renderMovieList(currentMovieDataByPage, currentRenderStyle)
     renderPaginatorList(movies)
+    activeAddIconOrNot()
   })
   .catch((err) => console.log(err))
 
@@ -29,6 +31,7 @@ dataPanel.addEventListener('click', event => {
   if (event.target.matches('.btn-show-movie')) {
     showMovieModal(event.target.dataset.id)
   } else if (event.target.matches('.btn-add-favorite')) {
+    event.target.classList.remove('btn-info')
     addToFavorite(Number(event.target.dataset.id))
   }
 })
@@ -57,7 +60,7 @@ paginator.addEventListener('click', e => {
 renderStyle.addEventListener('click', e => {
   switch (e.target.dataset.actionType) {
     case ('list-style'):
-      currentRenderStyle='list'
+      currentRenderStyle = 'list'
       renderMovieList(currentMovieDataByPage, currentRenderStyle)
       break
     case ('card-style'):
@@ -66,7 +69,6 @@ renderStyle.addEventListener('click', e => {
       break
   }
 })
-
 
 function renderMovieList (data, style) {
   switch (style) {
@@ -97,13 +99,12 @@ function showMovieModal (id) {
 }
 
 function addToFavorite (id) {
-  const list = JSON.parse(localStorage.getItem('favoriteMovies')) || []
   const movie = movies.find((movie) => movie.id === id)
-  if (list.some((movie) => movie.id === id)) {
+  if (favoriteMovieList.some((movie) => movie.id === id)) {
     return alert('此電影已經在收藏清單中！')
   }
-  list.push(movie)
-  localStorage.setItem('favoriteMovies', JSON.stringify(list))
+  favoriteMovieList.push(movie)
+  localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovieList))
 }
 
 function getMovieDataByPage (page = 1) {
@@ -113,32 +114,31 @@ function getMovieDataByPage (page = 1) {
 
 function renderPaginatorList (data) {
   const pages = Math.ceil(data.length / pageNumber)
-  let rawHTML = ''
-  for (let index = 0; index < pages; index++) {
-    rawHTML += `<li class="page-item"><a class="page-link" href="#">${index + 1}</a></li>`
+  let rawHTML = '<li class="nav-item"><a class="nav-link active" href="#" data-bs-toggle="pill">1</a></li>'
+  for (let index = 1; index < pages; index++) {
+    rawHTML += `<li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="pill">${index + 1}</a></li>`
   }
   paginator.innerHTML = rawHTML
 }
 
 function renderListStyle (data) {
-  let rawHTML = ''
+  let rawHTML = '<table class="table table-dark table-hover">'
   data.forEach((item) => {
-    rawHTML += `
-    <div class="row">
-      <div class="col-8">
-        <h6 class="card-title">${item.title}</h6>
-      </div>
-      <div class="col-4 footer">
-        <div class="btn float-end">
-          <button class="btn btn-primary btn-show-movie" data-bs-toggle="modal" data-bs-target="#movie-modal" data-id="${item.id}">More</button>
-          <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
-        </div>
-      </div>
-    </div>
+    rawHTML += `    
+    <tr>
+      <th class="align-middle fs-4" scope="row" >${item.title}</th>
+      <td>
+        <button class="btn btn-info btn-add-favorite float-end m-1" data-id="${item.id}">+</button>
+        <button class="btn btn-primary btn-show-movie float-end m-1" data-bs-toggle="modal" data-bs-target="#movie-modal" data-id="${item.id}">More</button>
+      </td>
+    </tr>
     `
   })
+  rawHTML += `</table>`
   dataPanel.innerHTML = rawHTML
+  activeAddIconOrNot()
 }
+
 function renderCardStyle (data) {
   let rawHTML = ''
   data.forEach((item) => {
@@ -146,7 +146,7 @@ function renderCardStyle (data) {
     <div class="my-1 col-sm-2">
       <div class="mb-2 h-100">
         <div class="card h-100">
-          <img src="${POSTER_URL + item.image}" class="card-img-top" alt="Movie Poster">
+          <img src="${POSTER_URL + item.image}" class="card-img-top w-75" alt="Movie Poster">
           <div class="card-body">
             <h6 class="card-title">${item.title}</h6>
           </div>
@@ -159,4 +159,15 @@ function renderCardStyle (data) {
     </div>`
   })
   dataPanel.innerHTML = rawHTML
+  activeAddIconOrNot()
 }
+
+function activeAddIconOrNot () {
+  favoriteMovieList.forEach((e) => {
+    const target = document.querySelector(`.btn-info[data-id="${e.id}"]`)
+    console.log(target)
+    if (!target) return
+    target.classList.remove('btn-info')
+  })
+}
+
