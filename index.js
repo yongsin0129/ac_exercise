@@ -5,12 +5,13 @@ const dataPanel = document.querySelector('#data-panel')
 const searchForm = document.querySelector('#search-form')
 const searchInput = document.querySelector('#search-input')
 const paginator = document.querySelector('#paginator')
+const renderStyle = document.querySelector('#render-style')
 const pageNumber = 12
 let currentPage = 1
 const movies = []
 let currentMovieData = [] // 使用 search 會改變資料，所以創立一個變數來裝
 let currentMovieDataByPage = []
-
+let currentRenderStyle = 'card'
 
 axios
   .get(INDEX_URL)
@@ -18,7 +19,7 @@ axios
     movies.push(...response.data.results) // API抓取全部的 movie 資料
     currentMovieData = movies
     currentMovieDataByPage = getMovieDataByPage(currentPage)
-    renderMovieList(currentMovieDataByPage)
+    renderMovieList(currentMovieDataByPage, currentRenderStyle)
     renderPaginatorList(movies)
   })
   .catch((err) => console.log(err))
@@ -39,7 +40,7 @@ searchForm.addEventListener('input', function onSearchFormSubmitted (event) {
     movie.title.toLowerCase().includes(keyword)
   )
   currentMovieDataByPage = getMovieDataByPage()
-  renderMovieList(currentMovieDataByPage)
+  renderMovieList(currentMovieDataByPage, currentRenderStyle)
   renderPaginatorList(currentMovieData)
 })
 
@@ -48,30 +49,36 @@ paginator.addEventListener('click', e => {
   if (e.target.tagName === 'A') {
     currentPage = Number(e.target.innerText)
     currentMovieDataByPage = getMovieDataByPage(currentPage)
-    renderMovieList(currentMovieDataByPage)
+    renderMovieList(currentMovieDataByPage, currentRenderStyle)
   }
 })
 
-function renderMovieList (data) {
-  let rawHTML = ''
-  data.forEach((item) => {
-    // title, image
-    rawHTML += `<div class="my-1 col-sm-2">
-    <div class="mb-2 h-100">
-      <div class="card h-100">
-        <img src="${POSTER_URL + item.image}" class="card-img-top" alt="Movie Poster">
-        <div class="card-body">
-          <h5 class="card-title">${item.title}</h5>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-show-movie" data-bs-toggle="modal" data-bs-target="#movie-modal" data-id="${item.id}">More</button>
-          <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
-        </div>
-      </div>
-    </div>
-  </div>`
-  })
-  dataPanel.innerHTML = rawHTML
+// 監聽 renderStyle 
+renderStyle.addEventListener('click', e => {
+  switch (e.target.dataset.actionType) {
+    case ('list-style'):
+      currentRenderStyle='list'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('card-style'):
+      currentRenderStyle = 'card'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+  }
+})
+
+
+function renderMovieList (data, style) {
+  switch (style) {
+    case 'list':
+      console.log("list style")
+      renderListStyle(data)
+      break
+    case 'card':
+      console.log("card style")
+      renderCardStyle(data)
+      break
+  }
 }
 
 function showMovieModal (id) {
@@ -111,4 +118,45 @@ function renderPaginatorList (data) {
     rawHTML += `<li class="page-item"><a class="page-link" href="#">${index + 1}</a></li>`
   }
   paginator.innerHTML = rawHTML
+}
+
+function renderListStyle (data) {
+  let rawHTML = ''
+  data.forEach((item) => {
+    rawHTML += `
+    <div class="row">
+      <div class="col-8">
+        <h6 class="card-title">${item.title}</h6>
+      </div>
+      <div class="col-4 footer">
+        <div class="btn float-end">
+          <button class="btn btn-primary btn-show-movie" data-bs-toggle="modal" data-bs-target="#movie-modal" data-id="${item.id}">More</button>
+          <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
+        </div>
+      </div>
+    </div>
+    `
+  })
+  dataPanel.innerHTML = rawHTML
+}
+function renderCardStyle (data) {
+  let rawHTML = ''
+  data.forEach((item) => {
+    rawHTML += `
+    <div class="my-1 col-sm-2">
+      <div class="mb-2 h-100">
+        <div class="card h-100">
+          <img src="${POSTER_URL + item.image}" class="card-img-top" alt="Movie Poster">
+          <div class="card-body">
+            <h6 class="card-title">${item.title}</h6>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-show-movie" data-bs-toggle="modal" data-bs-target="#movie-modal" data-id="${item.id}">More</button>
+            <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`
+  })
+  dataPanel.innerHTML = rawHTML
 }

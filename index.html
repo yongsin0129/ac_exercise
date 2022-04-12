@@ -7,6 +7,9 @@
   <title>Movie List</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"
+    integrity="sha384-/frq1SRXYH/bSyou/HUp/hib7RVN1TawQYja658FEOodR/FQBKVqT9Ol+Oz3Olq5" crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -31,19 +34,19 @@
   </nav>
   <div class="container mt-1">
     <!-- search bar -->
-    <div class="row">
-      <form class="row row-cols-lg-auto g-3 align-items-center" id="search-form">
-        <div class="col-12">
+    <div class="row my-1">
+      <form class="col-4" id="search-form">
+        <div class="col">
           <label class="visually-hidden" for="inlineFormInputGroupUsername">search keyword</label>
           <div class="input-group">
             <input class="form-control" id="search-input" placeholder="keyword">
           </div>
         </div>
-
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Search</button>
-        </div>
       </form>
+      <span class="col-8" id="render-style" style="font-size : xx-large">
+        <i class="fa fa-bars float-end m-2" data-action-type="list-style" aria-hidden="true"></i>
+        <i class="fa fa-th float-end m-2" data-action-type="card-style" aria-hidden="true"></i>
+      </span>
     </div>
     <!-- render movie list -->
     <div class="row" id="data-panel">
