@@ -56,42 +56,6 @@ paginator.addEventListener('click', e => {
   }
 })
 
-// 監聽 renderStyle 
-renderStyle.addEventListener('click', e => {
-  switch (e.target.dataset.actionType) {
-    case ('list-style'):
-      currentRenderStyle = 'list'
-      renderMovieList(currentMovieDataByPage, currentRenderStyle)
-      break
-    case ('card-style'):
-      currentRenderStyle = 'card'
-      renderMovieList(currentMovieDataByPage, currentRenderStyle)
-      break
-    case ('accordion-style'):
-      currentRenderStyle = 'accordion'
-      renderMovieList(currentMovieDataByPage, currentRenderStyle)
-      break
-    case ('clear-all-favorites'):
-      localStorage.removeItem('favoriteMovies')
-      location.reload()
-      break
-  }
-})
-
-function renderMovieList (data, style) {
-  switch (style) {
-    case 'list':
-      renderListStyle(data)
-      break
-    case 'card':
-      renderCardStyle(data)
-      break
-    case 'accordion':
-      renderAccordionStyle(data)
-      break
-  }
-}
-
 function showMovieModal (id) {
   const modalTitle = document.querySelector('#movie-modal-title')
   const modalImage = document.querySelector('#movie-modal-image')
@@ -102,8 +66,7 @@ function showMovieModal (id) {
     modalTitle.innerText = data.title
     modalDate.innerText = 'Release date: ' + data.release_date
     modalDescription.innerText = data.description
-    modalImage.innerHTML = `<img src="${POSTER_URL + data.image
-      }" alt="movie-poster" class="img-fluid">`
+    modalImage.innerHTML = `<img src="${POSTER_URL + data.image}" alt="movie-poster" class="img-fluid">`
   })
 }
 
@@ -130,8 +93,63 @@ function renderPaginatorList (data) {
   paginator.innerHTML = rawHTML
 }
 
+function activeAddIconOrNot () {
+  favoriteMovieList.forEach((e) => {
+    const target = document.querySelector(`.btn-info[data-id="${e.id}"]`)
+    if (!target) return
+    target.classList.remove('btn-info')
+  })
+}
+
+// 以下為本次作業新增的程式碼
+// 監聽 renderStyle 
+renderStyle.addEventListener('click', e => {
+  switch (e.target.dataset.actionType) {
+    case ('list-style'):
+      currentRenderStyle = 'list'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('card-style'):
+      currentRenderStyle = 'card'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('accordion-style'):
+      currentRenderStyle = 'accordion'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('carousel-style'):
+      currentRenderStyle = 'carousel'
+      renderMovieList(currentMovieDataByPage, currentRenderStyle)
+      break
+    case ('clear-all-favorites'):
+      localStorage.removeItem('favoriteMovies')
+      location.reload()
+      break
+  }
+})
+
+function renderMovieList (data, style) {
+  switch (style) {
+    case 'list':
+      renderListStyle(data)
+      break
+    case 'card':
+      renderCardStyle(data)
+      break
+    case 'accordion':
+      renderAccordionStyle(data)
+      break
+    case 'carousel':
+      renderCarouselStyle(data)
+      break
+  }
+  activeAddIconOrNot()
+}
+
+// render style function
+
 function renderListStyle (data) {
-  let rawHTML = '<table class="table table-dark table-hover">'
+  let rawHTML = '<table class="table table-hover">'
   data.forEach((item) => {
     rawHTML += `    
     <tr>
@@ -145,7 +163,6 @@ function renderListStyle (data) {
   })
   rawHTML += `</table>`
   dataPanel.innerHTML = rawHTML
-  activeAddIconOrNot()
 }
 
 function renderCardStyle (data) {
@@ -168,7 +185,6 @@ function renderCardStyle (data) {
     </div>`
   })
   dataPanel.innerHTML = rawHTML
-  activeAddIconOrNot()
 }
 
 function renderAccordionStyle (data) {
@@ -196,13 +212,46 @@ function renderAccordionStyle (data) {
     `
   })
   dataPanel.innerHTML = rawHTML
-  activeAddIconOrNot()
 }
 
-function activeAddIconOrNot () {
-  favoriteMovieList.forEach((e) => {
-    const target = document.querySelector(`.btn-info[data-id="${e.id}"]`)
-    if (!target) return
-    target.classList.remove('btn-info')
+function renderCarouselStyle (data = currentMovieDataByPage) {
+  let rawHTML = ''
+  rawHTML += `      
+      <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1000">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <figure class="">
+              <img src="${POSTER_URL + data[0].image}" class="rounded mx-auto d-block">
+              <figcaption class="figure-caption text-center fs-4">${data[0].description}
+                <button class="btn btn-info btn-add-favorite" data-id="${data[0].id}">+</button>
+              </figcaption>
+            </figure>
+          </div>
+        `
+  data.forEach((item, index) => {
+    if (index === 0) { return }
+    rawHTML += `
+          <div class="carousel-item">         
+            <figure class="">
+              <img src="${POSTER_URL + item.image}" class="rounded mx-auto d-block">
+              <figcaption class="figure-caption text-center fs-4">${item.description}
+                <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
+              </figcaption>
+            </figure>
+          </div>
+    `
   })
+  rawHTML += `
+          </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+  `
+  dataPanel.innerHTML = rawHTML
 }
