@@ -1,0 +1,20 @@
+.fa-bars:hover,
+.fa-th:hover,
+.fa-window-maximize:hover,
+.btn-danger:hover,
+.fa-book-open:hover {
+  transform: scale(1.2);
+}
+
+.accordion-button:hover {
+  box-shadow: 10px 10px 5px 5px rgba(0, 0, 0, 0.9);
+  transform: scale(1.02);
+}
+
+.btn-lg {
+  transform: scale(1.5)
+}
+
+.btn-add-favorite {
+  border: 2px solid rgba(10, 214, 241, 0.7)
+}

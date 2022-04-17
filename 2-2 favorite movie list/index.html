@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"
+    integrity="sha384-/frq1SRXYH/bSyou/HUp/hib7RVN1TawQYja658FEOodR/FQBKVqT9Ol+Oz3Olq5" crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container mt-1">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Movie List</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/favorite.html">favorite</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- search bar -->
+    <div class="row my-1 align-items-center">
+      <form class="col-4" id="search-form">
+        <div class="col">
+          <label class="visually-hidden" for="inlineFormInputGroupUsername">search keyword</label>
+          <div class="input-group">
+            <input class="form-control" id="search-input" placeholder="keyword">
+          </div>
+        </div>
+      </form>
+      <span class="col-8" id="render-style" style="font-size : xx-large">
+        <button type="button" class="btn btn-danger m-2" data-action-type="clear-all-favorites">Clear All
+          Favorites</button>
+        <i class="fa-solid fa-book-open float-end m-2" data-action-type="carousel-style" aria-hidden="true"></i>
+        <i class="fa-solid fa-window-maximize float-end m-2" data-action-type="accordion-style" aria-hidden="true"></i>
+        <i class="fa fa-bars float-end m-2" data-action-type="list-style" aria-hidden="true"></i>
+        <i class="fa fa-th float-end m-2" data-action-type="card-style" aria-hidden="true"></i>
+      </span>
+    </div>
+    <!-- render movie list -->
+    <div class="row" id="data-panel">
+      <!-- 動態產生資料 -->
+    </div>
+  </div>
+
+  <!-- paginator -->
+  <nav aria-label="Page navigation">
+    <ul class="nav nav-pills pagination justify-content-center" id="paginator">
+      <!-- 動態產生資料 -->
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+    </ul>
+  </nav>
+
+  <!-- Movie Modal -->
+  <div class="modal fade" id="movie-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="movie-modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+        <div class="modal-body" id="movie-modal-body">
+          <div class="row">
+            <div class="col-sm-8" id="movie-modal-image">
+              <img
+                src="https://github.com/ALPHACamp/movie-list-api/blob/master/public/posters/c9XxwwhPHdaImA2f1WEfEsbhaFB.jpg?raw=true"
+                alt="movie-poster" class="img-fluid">
+            </div>
+            <div class="col-sm-4">
+              <p><em id="movie-modal-date">release date: 2020/01/05</em></p>
+              <p id="movie-modal-description">This is a movie.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- extension -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+  <script src="index.js"></script>
+</body>
+</html>
