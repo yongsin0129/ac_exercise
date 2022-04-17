@@ -1,0 +1,12 @@
+.fa-heart:before {
+  color: red;
+}
+
+#data-panel {
+  min-height: 700px
+}
+
+#data-panel img:hover,.fa-heart:hover {
+  transform: scale(1.2);
+  transition: 0.5s
+}
